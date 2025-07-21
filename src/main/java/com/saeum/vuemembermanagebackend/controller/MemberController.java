@@ -2,6 +2,8 @@ package com.saeum.vuemembermanagebackend.controller;
 
 
 import com.saeum.vuemembermanagebackend.model.dto.request.MemberCreateRequest;
+import com.saeum.vuemembermanagebackend.model.dto.request.MemberDeleteRequest;
+import com.saeum.vuemembermanagebackend.model.dto.request.MemberDetailRequest;
 import com.saeum.vuemembermanagebackend.model.dto.request.MemberSearchRequest;
 import com.saeum.vuemembermanagebackend.model.dto.request.MemberUpdateRequest;
 import com.saeum.vuemembermanagebackend.model.dto.response.MemberListResponse;
@@ -62,14 +64,11 @@ public class MemberController {
      * 회원 삭제 DELETE /api/member/deleteMember
      */
     @DeleteMapping("/deleteMember")
-    public ResponseEntity<Map<String, Object>> deleteMember(@RequestParam("userKey") Long userKey) {
-        log.info("회원 삭제 API 호출: userKey={}", userKey);
+    public ResponseEntity<Map<String, Object>> deleteMember(
+        @Valid @RequestBody MemberDeleteRequest request) {
+        log.info("회원 삭제 API 호출: userKey={}", request.getUserKey());
 
-        if (userKey == null || userKey <= 0) {
-            throw new IllegalArgumentException("유효한 회원 고유키를 입력해주세요.");
-        }
-
-        memberService.deleteMember(userKey);
+        memberService.deleteMember(request.getUserKey());
 
         Map<String, Object> response = new HashMap<>();
         response.put("success", true);
@@ -83,32 +82,10 @@ public class MemberController {
      */
     @PostMapping("/getMemberDetail")
     public ResponseEntity<MemberResponse> getMemberDetail(
-        @RequestBody Map<String, Object> request) {
-        log.info("회원 상세 조회 API 호출: {}", request);
+        @Valid @RequestBody MemberDetailRequest request) {
+        log.info("회원 상세 조회 API 호출: userKey={}", request.getUserKey());
 
-        Object userKeyObj = request.get("userKey");
-        if (userKeyObj == null) {
-            throw new IllegalArgumentException("userKey는 필수입니다.");
-        }
-
-        Long userKey;
-        try {
-            if (userKeyObj instanceof Integer) {
-                userKey = ((Integer) userKeyObj).longValue();
-            } else if (userKeyObj instanceof Long) {
-                userKey = (Long) userKeyObj;
-            } else {
-                userKey = Long.valueOf(userKeyObj.toString());
-            }
-        } catch (NumberFormatException e) {
-            throw new IllegalArgumentException("userKey는 숫자여야 합니다.");
-        }
-
-        if (userKey <= 0) {
-            throw new IllegalArgumentException("유효한 회원 고유키를 입력해주세요.");
-        }
-
-        MemberResponse memberResponse = memberService.getMemberDetail(userKey);
+        MemberResponse memberResponse = memberService.getMemberDetail(request.getUserKey());
 
         return ResponseEntity.ok(memberResponse);
     }

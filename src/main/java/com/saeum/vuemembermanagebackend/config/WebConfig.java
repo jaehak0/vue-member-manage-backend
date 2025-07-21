@@ -10,7 +10,7 @@ import java.util.List;
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
 
-    @Value("${app.frontend.base-urls:http://localhost:3000}")
+    @Value("${app.frontend.base-urls:http://localhost:3000,http://localhost:5173}")
     private List<String> frontendBaseUrls;
 
     @Value("${app.cors.max-age:3600}")
@@ -18,11 +18,11 @@ public class WebConfig implements WebMvcConfigurer {
 
     @Override
     public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/api/**") // API 경로에 대해서만 CORS 허용
-                .allowedOrigins(frontendBaseUrls.toArray(new String[0])) // yml에서 설정한 URL들
-                .allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS")
-                .allowedHeaders("*")
-                .allowCredentials(true)
-                .maxAge(corsMaxAge); // preflight 요청 캐시 시간 (1시간)
+        registry.addMapping("/**") // API 경로에 대해서만 CORS 허용
+            .allowedOrigins(frontendBaseUrls.toArray(new String[0])) // yml에서 설정한 URL들
+            .allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS")
+            .allowedHeaders("*")
+            .allowCredentials(true)
+            .maxAge(corsMaxAge); // preflight 요청 캐시 시간 (1시간)
     }
 }

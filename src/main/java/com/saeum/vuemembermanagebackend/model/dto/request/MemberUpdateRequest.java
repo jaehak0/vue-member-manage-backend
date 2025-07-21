@@ -1,5 +1,7 @@
 package com.saeum.vuemembermanagebackend.model.dto.request;
 
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -8,6 +10,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class MemberUpdateRequest {
 
     @NotNull(message = "회원 고유키는 필수입니다.")
@@ -22,6 +25,7 @@ public class MemberUpdateRequest {
         message = "전화번호 형식이 올바르지 않습니다. (예: 010-1234-5678, 01012345678)")
     private String phone;
 
+    @NotBlank(message = "이메일은 필수입니다.")
     @Pattern(regexp = "^[\\w._%+-]+@[\\w.-]+\\.[A-Za-z]{2,}$",
         message = "이메일 형식이 올바르지 않습니다.")
     @Size(max = 100, message = "이메일은 100자 이하여야 합니다.")

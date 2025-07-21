@@ -28,3 +28,4 @@ replay_pid*
 /data
 /gradle
 src/main/resources/application.yml
+src/main/resources/application.yml~
